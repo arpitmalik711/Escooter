@@ -433,6 +433,264 @@ nav {
   .notify-btn { width: 100%; text-align: center; }
 }
 
+/* ── FEATURED WORK ── */
+.featured {
+  padding: clamp(48px, 10vw, 80px) var(--pad) 0;
+}
+.featured-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: clamp(20px, 4vw, 36px); gap: 16px; flex-wrap: wrap;
+}
+.featured-title-group {}
+.featured-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(0.45rem, 1.4vw, 0.56rem);
+  letter-spacing: 0.5em; color: var(--neon);
+  text-transform: uppercase; margin-bottom: 6px;
+  opacity: 0.7;
+}
+.featured-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.2rem, 7vw, 5rem);
+  line-height: 0.9; letter-spacing: 0.04em;
+  color: var(--white);
+}
+.featured-title span {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(242,239,233,0.2);
+}
+.featured-count {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(0.45rem, 1.3vw, 0.54rem);
+  letter-spacing: 0.3em; color: #2a2a2a;
+  text-transform: uppercase; white-space: nowrap;
+  align-self: flex-end;
+}
+
+/* Thumbnail grid */
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
+  gap: clamp(6px, 1.5vw, 12px);
+}
+@media(min-width: 600px) {
+  .featured-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media(min-width: 900px) {
+  .featured-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media(min-width: 1200px) {
+  .featured-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+.thumb-card {
+  position: relative; overflow: hidden; cursor: pointer;
+  background: var(--dim); aspect-ratio: 3/4;
+  border: 1px solid #1a1a1a;
+  transition: border-color 0.3s, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.thumb-card:hover { border-color: rgba(198,241,53,0.3); transform: translateY(-3px); }
+.thumb-card:hover .thumb-overlay { opacity: 1; }
+.thumb-card:hover img { transform: scale(1.07); filter: brightness(0.75); }
+
+.thumb-card img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), filter 0.4s ease;
+  filter: brightness(0.85) grayscale(10%);
+}
+
+.thumb-placeholder {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+  border: 1px dashed #222; color: #2a2a2a;
+}
+.thumb-placeholder svg { stroke: #2a2a2a; opacity: 0.5; }
+.thumb-placeholder span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.42rem; letter-spacing: 0.35em;
+  text-transform: uppercase; opacity: 0.4;
+}
+
+.thumb-overlay {
+  position: absolute; inset: 0; opacity: 0;
+  background: linear-gradient(to top, rgba(8,8,8,0.85) 0%, transparent 60%);
+  display: flex; flex-direction: column;
+  justify-content: flex-end; padding: 12px;
+  transition: opacity 0.35s ease;
+}
+.thumb-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.44rem; letter-spacing: 0.4em;
+  color: var(--neon); margin-bottom: 4px; opacity: 0.7;
+}
+.thumb-view {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  letter-spacing: 0.18em; color: var(--white);
+}
+
+/* top neon accent */
+.thumb-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: var(--neon); z-index: 2;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.thumb-card:hover::before { transform: scaleX(1); }
+
+/* Upload CTA card */
+.thumb-add {
+  aspect-ratio: 3/4;
+  border: 1px dashed #1e1e1e; background: transparent;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+  cursor: default;
+}
+.thumb-add svg { stroke: #2a2a2a; }
+.thumb-add span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.4rem; letter-spacing: 0.4em;
+  color: #2a2a2a; text-transform: uppercase; text-align: center;
+  line-height: 1.8;
+}
+
+/* ── LIGHTBOX ── */
+.lightbox {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(4,4,4,0.97);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.lightbox.open { opacity: 1; pointer-events: all; }
+
+.lb-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+/* Image track — horizontal slider */
+.lb-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.lb-slide {
+  flex-shrink: 0;
+  width: 100vw; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(60px, 10vw, 90px) clamp(60px, 10vw, 100px);
+}
+.lb-slide img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain; display: block;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.8);
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* HUD */
+.lb-hud {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: clamp(14px, 3vw, 22px) clamp(14px, 4vw, 28px);
+  background: linear-gradient(to bottom, rgba(4,4,4,0.92) 0%, transparent 100%);
+}
+.lb-counter {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(0.5rem, 2vw, 0.6rem); letter-spacing: 0.4em;
+  color: rgba(242,239,233,0.55); text-transform: uppercase;
+}
+
+/* ── CLOSE BUTTON — always visible ── */
+.lb-close {
+  background: rgba(8,8,8,0.7);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--white);
+  padding: clamp(8px,2vw,11px) clamp(10px,2.5vw,16px);
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  display: flex; align-items: center; gap: 8px;
+  min-width: 44px; min-height: 44px;   /* touch target */
+  justify-content: center;
+}
+.lb-close:hover,
+.lb-close:focus-visible {
+  border-color: var(--neon); color: var(--neon);
+  background: rgba(198,241,53,0.07);
+  outline: none;
+}
+.lb-close span {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(0.45rem, 1.5vw, 0.55rem); letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+.lb-close svg { flex-shrink: 0; }
+/* Hide text label on very small screens, keep icon */
+@media(max-width: 400px) {
+  .lb-close span { display: none; }
+}
+
+/* Arrow buttons */
+.lb-arrow {
+  position: absolute; top: 50%; z-index: 10;
+  transform: translateY(-50%);
+  background: rgba(8,8,8,0.6);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--white); cursor: pointer;
+  padding: clamp(12px,2vw,16px) clamp(10px,1.5vw,14px);
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 44px; min-height: 44px;   /* touch target */
+  border-radius: 4px;
+}
+.lb-arrow:hover,
+.lb-arrow:focus-visible {
+  border-color: var(--neon); color: var(--neon);
+  background: rgba(198,241,53,0.07); outline: none;
+}
+.lb-arrow.prev { left: clamp(10px, 3vw, 24px); }
+.lb-arrow.next { right: clamp(10px, 3vw, 24px); }
+
+/* Hide arrows on mobile — swipe is enough */
+@media(max-width: 480px) {
+  .lb-arrow { display: none; }
+}
+
+/* Dot strip */
+.lb-dots {
+  position: absolute; bottom: clamp(18px,4vw,28px); left: 50%; transform: translateX(-50%);
+  display: flex; gap: 10px; z-index: 10;
+}
+.lb-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.18); cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  border: none;
+  /* larger tap target via padding trick */
+  padding: 0; box-shadow: 0 0 0 8px transparent;
+}
+.lb-dot:focus-visible { outline: 1px solid var(--neon); }
+.lb-dot.active { background: var(--neon); transform: scale(1.6); }
+
+/* touch/drag hint */
+.lb-hint {
+  position: absolute; bottom: clamp(48px,8vw,62px); left: 50%; transform: translateX(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.38rem; letter-spacing: 0.4em;
+  color: rgba(255,255,255,0.15); text-transform: uppercase; white-space: nowrap;
+  z-index: 10;
+}
+
 /* ── FOOTER ── */
 footer {
   padding: clamp(14px, 3vw, 20px) var(--pad);
@@ -502,6 +760,91 @@ footer span {
 </section>
 
 
+<!-- ══════════════════════════════════════════
+     FEATURED WORK  — replace the placeholder
+     <img> src attributes with your own file
+     paths, URLs, or data URIs.
+     Add / remove .thumb-card blocks freely.
+     ══════════════════════════════════════════ -->
+<section class="featured">
+
+  <div class="featured-header">
+    <div class="featured-title-group">
+      <div class="featured-eyebrow">// Design Preview</div>
+      <div class="featured-title">Featured <span>Work</span></div>
+    </div>
+    <span class="featured-count" id="thumbCount">— 03 shots</span>
+  </div>
+
+  <div class="featured-grid" id="featuredGrid">
+
+    <!-- ── CARD 1 — Ergonomics view ── -->
+    <div class="thumb-card" data-index="0">
+      <img src="escooter.img.ergono.jpeg" alt="E-Scooter Ergonomics View"
+           onerror="this.parentElement.querySelector('.thumb-placeholder').style.display='flex'; this.style.display='none'"/>
+      <div class="thumb-placeholder" style="display:none; position:absolute; inset:0; background:var(--dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>escooter.img.ergono.jpeg</span>
+      </div>
+      <div class="thumb-overlay">
+        <div class="thumb-num">01</div>
+        <div class="thumb-view">View</div>
+      </div>
+    </div>
+
+    <!-- ── CARD 2 — Feature calculations view ── -->
+    <div class="thumb-card" data-index="1">
+      <img src="escooter.img.feacalc.jpeg" alt="E-Scooter Feature Calculations"
+           onerror="this.parentElement.querySelector('.thumb-placeholder').style.display='flex'; this.style.display='none'"/>
+      <div class="thumb-placeholder" style="display:none; position:absolute; inset:0; background:var(--dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>escooter.img.feacalc.jpeg</span>
+      </div>
+      <div class="thumb-overlay">
+        <div class="thumb-num">02</div>
+        <div class="thumb-view">View</div>
+      </div>
+    </div>
+
+    <!-- ── CARD 3 — Top view ── -->
+    <div class="thumb-card" data-index="2">
+      <img src="escooter.img.topview.jpeg" alt="E-Scooter Top View"
+           onerror="this.parentElement.querySelector('.thumb-placeholder').style.display='flex'; this.style.display='none'"/>
+      <div class="thumb-placeholder" style="display:none; position:absolute; inset:0; background:var(--dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>escooter.img.topview.jpeg</span>
+      </div>
+      <div class="thumb-overlay">
+        <div class="thumb-num">03</div>
+        <div class="thumb-view">View</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── LIGHTBOX ── -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <div class="lb-inner" id="lbInner">
+    <div class="lb-track" id="lbTrack"></div>
+    <div class="lb-hud">
+      <span class="lb-counter" id="lbCounter">01 / 06</span>
+      <button class="lb-close" id="lbClose" aria-label="Close lightbox">
+        <span>Close</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <button class="lb-arrow prev" id="lbPrev" aria-label="Previous">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="lb-arrow next" id="lbNext" aria-label="Next">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="lb-dots" id="lbDots"></div>
+    <div class="lb-hint">Swipe or use ← → keys</div>
+  </div>
+</div>
+
 <!-- COMING SOON -->
 <div class="soon-block">
   <div class="soon-inner">
@@ -539,13 +882,13 @@ footer span {
   
   <div class="contact-sep"></div>
   
-  <a href="mailto:arpit.malik.ug23@nsut.ac.in" class="contact-item">
+  <a href="/cdn-cgi/l/email-protection#ccadbebca5b8e2a1ada0a5a7e2b9abfeff8ca2bfb9b8e2adafe2a5a2" class="contact-item">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
       <polyline points="22,6 12,13 2,6"/>
     </svg>
     <span class="contact-label">Email</span>
-    <span class="contact-val">arpit.malik.ug23@nsut.ac.in</span>
+    <span class="contact-val"><span class="__cf_email__" data-cfemail="1071626079643e7d717c797b3e65772223507e6365643e71733e797e">[email&#160;protected]</span></span>
   </a>
 </div>
 
@@ -564,12 +907,155 @@ footer span {
   <span>Confidential — Do not distribute</span>
 </footer>
 
+<script>
+/* ── LIGHTBOX ENGINE ── */
+(function() {
+  const lb        = document.getElementById('lightbox');
+  const lbTrack   = document.getElementById('lbTrack');
+  const lbCounter = document.getElementById('lbCounter');
+  const lbDots    = document.getElementById('lbDots');
+  const lbPrev    = document.getElementById('lbPrev');
+  const lbNext    = document.getElementById('lbNext');
+  const lbClose   = document.getElementById('lbClose');
+  const inner     = document.getElementById('lbInner');
+
+  const cards = Array.from(document.querySelectorAll('.thumb-card'));
+  const total  = cards.length;
+  let current  = 0;
+
+  /* ── Build slides & dots ── */
+  cards.forEach((card, i) => {
+    const img   = card.querySelector('img');
+    const slide = document.createElement('div');
+    slide.className = 'lb-slide';
+    const lbImg = document.createElement('img');
+    lbImg.src = img ? img.src : '';
+    lbImg.alt = img ? img.alt : '';
+    lbImg.draggable = false;
+    slide.appendChild(lbImg);
+    lbTrack.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.className = 'lb-dot';
+    dot.setAttribute('aria-label', `Go to image ${i + 1}`);
+    dot.addEventListener('click', () => goTo(i));
+    lbDots.appendChild(dot);
+  });
+
+  function pad(n) { return String(n + 1).padStart(2, '0'); }
+
+  function goTo(idx, instant) {
+    current = ((idx % total) + total) % total;
+    lbTrack.style.transition = instant ? 'none' : 'transform 0.42s cubic-bezier(0.16,1,0.3,1)';
+    lbTrack.style.transform  = `translateX(calc(-${current} * 100vw))`;
+    lbCounter.textContent    = `${pad(current)} / ${pad(total - 1)}`;
+    document.querySelectorAll('.lb-dot').forEach((d, i) =>
+      d.classList.toggle('active', i === current));
+  }
+
+  function open(idx) {
+    goTo(idx, true);
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    /* focus close button for keyboard users */
+    setTimeout(() => lbClose.focus(), 50);
+  }
+
+  function close() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── Bind thumbnails ── */
+  cards.forEach((card, i) => {
+    card.addEventListener('click', () => open(i));
+    card.setAttribute('tabindex', '0');
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); }
+    });
+  });
+
+  lbClose.addEventListener('click', close);
+  if (lbPrev) lbPrev.addEventListener('click', () => goTo(current - 1));
+  if (lbNext) lbNext.addEventListener('click', () => goTo(current + 1));
+
+  /* ── Keyboard navigation ── */
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'Escape')     { e.preventDefault(); close(); }
+  });
+
+  /* ── Click dark backdrop to close ── */
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+
+  /* ── Touch swipe ── */
+  let touchStartX = 0, touchStartY = 0, isDragging = false, dragDelta = 0;
+
+  inner.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    isDragging  = false;
+    dragDelta   = 0;
+    lbTrack.style.transition = 'none';
+  }, { passive: true });
+
+  inner.addEventListener('touchmove', e => {
+    dragDelta   = e.touches[0].clientX - touchStartX;
+    const dy    = Math.abs(e.touches[0].clientY - touchStartY);
+    if (Math.abs(dragDelta) > dy + 5) {
+      isDragging = true;
+      lbTrack.style.transform = `translateX(calc(-${current} * 100vw + ${dragDelta}px))`;
+    }
+  }, { passive: true });
+
+  inner.addEventListener('touchend', () => {
+    if (isDragging && Math.abs(dragDelta) > 50) {
+      dragDelta < 0 ? goTo(current + 1) : goTo(current - 1);
+    } else {
+      goTo(current); /* snap back */
+    }
+    isDragging = false; dragDelta = 0;
+  });
+
+  /* ── Mouse drag (desktop) ── */
+  let mouseDown = false, mouseStartX = 0, mouseDelta = 0;
+
+  inner.addEventListener('mousedown', e => {
+    /* don't drag when clicking close / arrows / dots */
+    if (e.target.closest('.lb-close, .lb-arrow, .lb-dot')) return;
+    mouseDown   = true;
+    mouseStartX = e.clientX;
+    mouseDelta  = 0;
+    lbTrack.style.transition = 'none';
+    inner.style.cursor = 'grabbing';
+  });
+
+  inner.addEventListener('mousemove', e => {
+    if (!mouseDown) return;
+    mouseDelta = e.clientX - mouseStartX;
+    lbTrack.style.transform = `translateX(calc(-${current} * 100vw + ${mouseDelta}px))`;
+  });
+
+  function endMouseDrag(e) {
+    if (!mouseDown) return;
+    mouseDown = false;
+    inner.style.cursor = '';
+    if (Math.abs(mouseDelta) > 60) {
+      mouseDelta < 0 ? goTo(current + 1) : goTo(current - 1);
+    } else {
+      goTo(current);
+    }
+    mouseDelta = 0;
+  }
+  inner.addEventListener('mouseup',    endMouseDrag);
+  inner.addEventListener('mouseleave', endMouseDrag);
+
+  /* ── Init ── */
+  goTo(0, true);
+})();
+</script>
+
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  document.getElementById('notifyBtn').addEventListener('click', function() {
-    const input = this.previousElementSibling;
-    if (input.value.trim()) {
-      this.textContent = 'Done ✓';
-      this.style.borderColor = '#c6f135';
-      this.style.color = '#c6f135';
-      input.value = '';
-      input.placeholder = "You're on the 
+  document.getElementById('notifyBtn').addEventListener('click', function() 
